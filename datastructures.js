@@ -1,45 +1,32 @@
 class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  isInHalfplane(q, hLine) {
-  	//if they show the same turn, they are in the same side of the line
-  	if (hLine === null || q === null) {return true} //no half plane, so we show
-  	return (getTurn(q, hLine.topPoint, hLine.botPoint) === getTurn(this, hLine.topPoint, hLine.botPoint))
-  }
-  draw() {
-  	if (this.x === null || this.y === null) {return;}
-	resetStroke();
-  	ellipse(this.x, this.y, 6)
-  }
-  drawWithColor(q, hLine) {
-  	if (this == q) {this.draw()}
-  	else if (this.isInHalfplane(q, hLine)) {
-		stroke(0,255,0, 255);
-		fill("green")
-  		ellipse(this.x, this.y, 6);
-  		resetStroke();
-  	} else {
-  		stroke(255,0,0, 255);
-		fill("red")
-  		ellipse(this.x, this.y, 6);
-  		resetStroke();
-  	}
-  }
-}
-
-
-class DrawableArray extends Array {
-	draw() {
-		for (var i = this.length - 1; i >= 0; i--) {
-			this[i].draw();
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+		if (this.isInHalfPlane()) {
+			this.color = [0,255,0,255];
+		} else {
+			this.color = [255,0,0,255];
 		}
 	}
-	drawWithColor(q, hLine) {
-		for (var i = this.length - 1; i >= 0; i--) {
-			this[i].drawWithColor(q, hLine);
+
+	isInHalfPlane() {
+		//if they show the same turn, they are in the same side of the line
+		if (hLine === null || qPoint === null) {return true} //no half plane, so we show
+		return (getTurn(qPoint, hLine.topPoint, hLine.botPoint) === getTurn(this, hLine.topPoint, hLine.botPoint))
+	}
+
+	isUninitialized() {
+		return (this.x === null || this.y === null);
+	}
+
+	draw(kwArgs) {
+		if (this !== qPoint) {
+			stroke(this.color)
+			fill(this.color)
 		}
+		setStroke(kwArgs);
+		ellipse(this.x, this.y, 6);
+		resetStroke();
 	}
 }
 
@@ -51,33 +38,29 @@ class LineSegment {
 	intersects(other) {
 		if (this.isUninitialized()) {return new Point(null, null)}
 		// Calculating using determinant, translated to from math to javascript from source : https://mathworld.wolfram.com/Line-LineIntersection.html
-		var x1 = this.topPoint.x;
-		var y1 = this.topPoint.y;
-		var x2 = this.botPoint.x;
-		var y2 = this.botPoint.y;
+		const x1 = this.topPoint.x;const y1 = this.topPoint.y;const x2 = this.botPoint.x;const y2 = this.botPoint.y;
 
-		var x3 = other.topPoint.x;
-		var y3 = other.topPoint.y;
-		var x4 = other.botPoint.x;
-		var y4 = other.botPoint.y;
+		const x3 = other.topPoint.x;const y3 = other.topPoint.y;const x4 = other.botPoint.x;const y4 = other.botPoint.y;
 
-		var xPoint = ((x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4)) / 
-				 ((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
+		const xPoint = ((x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4)) /
+			((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
 
-		var yPoint = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4)) /
-				 ((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
+		const yPoint = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4)) /
+			((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
 
 
 		//Since the division by 0 is allowed in Javascript, if two lines are parralel, the point will have Infinite as x and y
 		return new Point(xPoint, yPoint)
 	}
 	isUninitialized() {
-		return (this.topPoint == null || this.topPoint.x == null || this.topPoint.y == null || 
-				this.botPoint == null || this.botPoint.x == null ||this.botPoint.y == null)
+		return (this.topPoint === null || this.topPoint.x === null || this.topPoint.y === null ||
+			this.botPoint === null || this.botPoint.x === null ||this.botPoint.y === null)
 	}
-	draw() {
+	draw(kwArgs) { //This method will draw (p5js) the shape using keyword args to change the color or stroke for example
 		if (this.isUninitialized()) {return;}
+		setStroke(kwArgs);
 		line(this.topPoint.x, this.topPoint.y, this.botPoint.x, this.botPoint.y)
+		resetStroke();
 	}
 }
 
@@ -100,7 +83,7 @@ class Polygon {
 	}
 	draw() {
 		beginShape();
-		for (var i = 0; i < this.vertices.length; i++) {
+		for (let i = 0; i < this.vertices.length; i++) {
 			vertex(this.vertices[i].x, this.vertices[i].y)
 		}
 		endShape();

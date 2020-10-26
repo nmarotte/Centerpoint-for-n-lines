@@ -1,60 +1,23 @@
-var canvas;
-var canvasDiv;
+let canvas;
+let canvasDiv;
 
-var firstPointOfLineSegment;
-var allLines = new DrawableArray();
-var allPoints = new DrawableArray();
-var allShapes = new DrawableArray();
-var corners = [null, null, null, null];
-var borders = [null, null, null, null];
-var tmpPreviewLine;
+let lastClickPoint;
+let allLines = [];
+let allPoints = [];
+let allShapes = [];
+let corners = [null, null, null, null];
+let borders = [null, null, null, null];
+let tmpPreviewLine;
+let tmpIntersectionPoints = [];
 
-var q = new Point(null,null);
-var hLine = new MyLine(null, null);
-
-var isNextClickLastLineSegmentPoint = false;
-var finishLine = false;
-
-function addNewIntersectionPoints() {
-	//Check the last added line with every other line
-	for (var i = 0; i < allLines.length-1; i++) {
-		allPoints.push(allLines[allLines.length-1].intersects(allLines[i]))
-	}
-}
-
-
-// Each button will modify what happens when we click, and then reset once their task is over
-
-function canvasClickedForLine() {
-	if (! finishLine) { // First point of the line
-		firstPointOfLineSegment = getMousePoint();
-	} else { // Second point of the line
-		createAndPushLine(firstPointOfLineSegment, getMousePoint());
-		addNewIntersectionPoints();
-	}
-	finishLine = ! finishLine; //if true the line is now finished so false, if false next click has to be true
-}
-
-function canvasClickedForHalfplane() {
-	if (! finishLine) { // First point of the half plane separator
-		firstPointOfLineSegment = getMousePoint();
-	} else { // Second point of the half plane separator
-		setHLine(new MyLine(firstPointOfLineSegment, getMousePoint()))
-		resetClickedFunction();
-	}
-	finishLine = ! finishLine; //if true the line is now finished so false, if false next click has to be true
-}
-
-function canvasClickedForQPoint() {
-	setQPoint(getMousePoint());
-	resetClickedFunction();
-}
+let hLine = null;
+let qPoint = null;
 
 function createBorders() {
 	corners = [new Point(0,0), new Point(canvasDiv.offsetWidth, 0),
-			   new Point(canvasDiv.offsetWidth, windowHeight), new Point(0, windowHeight)];
+		new Point(canvasDiv.offsetWidth, windowHeight), new Point(0, windowHeight)];
 	borders = [new LineSegment(corners[0], corners[1]), new LineSegment(corners[1], corners[2]),
-			   new LineSegment(corners[2], corners[3]), new LineSegment(corners[3], corners[0])]
+		new LineSegment(corners[2], corners[3]), new LineSegment(corners[3], corners[0])]
 }
 
 function setup() {
@@ -65,64 +28,34 @@ function setup() {
 	canvas.parent("canvasContainer");
 
 	//Adding on click function
-	canvas.mouseClicked(canvasClickedForLine)
+	canvas.mouseClicked(canvasClickedStartLine)
 	resetStroke();
 }
 
 function draw() {
 	background(125);
-	if (finishLine) {
-  		drawPreviewLine();
-		drawPreviewIntersectionPoints();
-  	}
-	allLines.draw(); //draw all allLines in the DrawableArray
-	allPoints.drawWithColor(q, hLine); //draw all intersections
-  	
-	q.draw();
-	strokeWeight(3);
-	hLine.draw();
-	resetStroke();
+	if (tmpPreviewLine != null) tmpPreviewLine.draw({colorValue:[75,75,75,255], weightValue:isNextLineHalfPlane?3:1});
+	tmpIntersectionPoints.forEach(point => point.draw()); //draw all temp intersections
+	allLines.forEach(line => line.draw()); //draw all allLines in the DrawableArray
+	if (hLine !== null) hLine.draw({weightValue:3})
+	allPoints.forEach(point => point.draw()); //draw all intersections
+	if (qPoint !== null) qPoint.draw();
 }
 
-function resetStroke() {
-	stroke(0,0,0, 255);
-	strokeWeight(1);
-	fill(0,0,0,255)
-}
-
-function drawPreviewIntersectionPoints() {
-	//This function highlight the intersecting allLines in red and the parallel lines in green
-	for (var i = 0; i < allLines.length; i++) {
-		var intersectionPoint = tmpPreviewLine.intersects(allLines[i]);
-		if (intersectionPoint !== null) {
-			intersectionPoint.drawWithColor(q, hLine)
-		}
-	}
-}
-
-
-function drawPreviewLine() {
-	//draw a line from the clicked point to the mouse position
-	tmpPreviewLine = new MyLine(firstPointOfLineSegment, getMousePoint());
-	stroke(70,70,70)
-	tmpPreviewLine.draw()
-	resetStroke();
-}
 
 function windowResized() {
 	resizeCanvas(canvasDiv.offsetWidth,windowHeight)
 	//resetting the line borders in case there was one parallel that need a new endpoint on the right
 	createBorders()
-	for (var i = 0; i < allLines.length; i++) {
+	for (let i = 0; i < allLines.length; i++) {
 		allLines[i] = new MyLine(allLines[i].topPoint, allLines[i].botPoint);
 	}
-	setHLine(new MyLine(hLine.topPoint, hLine.botPoint));
 }
 
 function getTurn(a, b, c) {
-  var determinant =
-    a.x * (b.y - c.y) - a.y * (b.x - c.x) + (b.x * c.y - c.x * b.y);
-  if (determinant < 0) return -1;
-  if (determinant === 0) return 0;
-  if (determinant > 0) return 1;
+	let determinant =
+		a.x * (b.y - c.y) - a.y * (b.x - c.x) + (b.x * c.y - c.x * b.y);
+	if (determinant < 0) return -1;
+	if (determinant === 0) return 0;
+	if (determinant > 0) return 1;
 }

@@ -11,5 +11,5 @@ function switchSegmentMode() {
 }
 
 function nextLineIsHalfPlane() {
-	canvas.mouseClicked(canvasClickedForHalfplane);
+	isNextLineHalfPlane = true;
 }
