@@ -3,11 +3,12 @@
 function canvasClickedStartLine() {
     lastClickPoint = getMousePoint();
     //We clicked for the first point so we also enable the preview
-    canvas.mouseMoved(refreshTmpPreviewLine);
     canvas.mouseClicked(canvasClickedFinishLine) //Bounces back and (1)
 
-    if (isNextLineHalfPlane) { //We are trying to draw the previewline for the separator
-
+    if (isNextLineHalfPlane) { //We are trying to draw the preview line for the separator
+        canvas.mouseMoved(refreshTmpSeparatorLine);
+    } else {
+        canvas.mouseMoved(refreshTmpPreviewLine);
     }
 }
 
@@ -38,10 +39,20 @@ function resetClickedFunction() {
     canvas.mouseClicked(canvasClickedStartLine);
 }
 
-function refreshTmpPreviewLine() {
+function refreshTmpPreviewLine() { //Called each time the mouse is moved when finishing the line
     tmpPreviewLine = new MyLine(lastClickPoint, getMousePoint());
     tmpIntersectionPoints = [];
     for (let i = 0; i < allLines.length; i++) {
         tmpIntersectionPoints.push(tmpPreviewLine.intersects(allLines[i]))
     }
+}
+
+function refreshTmpSeparatorLine() { //Called each time the mouse is moved when finishing the SEPARATOR line
+    tmpPreviewLine = new MyLine(lastClickPoint, getMousePoint());
+    //This is a particular preview, since we will change the color of the points according to their position
+    tmpIntersectionPoints = [];
+    for (let i = 0; i < allPoints.length; i++) {
+        allPoints[i].refreshColor(tmpPreviewLine);
+    }
+
 }

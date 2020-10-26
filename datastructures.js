@@ -2,17 +2,22 @@ class Point {
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
-		if (this.isInHalfPlane()) {
+		this.refreshColor();
+
+	}
+
+	refreshColor(line = hLine) {
+		if (this.isInHalfPlane(line)) {
 			this.color = [0,255,0,255];
 		} else {
 			this.color = [255,0,0,255];
 		}
 	}
 
-	isInHalfPlane() {
+	isInHalfPlane(line = hLine) {
 		//if they show the same turn, they are in the same side of the line
-		if (hLine === null || qPoint === null) {return true} //no half plane, so we show
-		return (getTurn(qPoint, hLine.topPoint, hLine.botPoint) === getTurn(this, hLine.topPoint, hLine.botPoint))
+		if (line === null || qPoint === null) {return true} //no half plane, so we show
+		return (getTurn(qPoint, line.topPoint, line.botPoint) === getTurn(this, line.topPoint, line.botPoint))
 	}
 
 	isUninitialized() {
