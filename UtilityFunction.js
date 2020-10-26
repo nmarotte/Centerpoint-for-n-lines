@@ -12,7 +12,11 @@ function addNewIntersectionPoints() {
 	//Check the last added line with every other line
 	let lastLine = allLines[allLines.length-1];
 	for (let i = 0; i < allLines.length-1; i++) {
-		allPoints.push(lastLine.intersects(allLines[i]));
+		let point = lastLine.intersects(allLines[i]);
+		allPoints.push(point);
+		lastLine.addNewPoint(point);
+		allLines[i].addNewPoint(point);
+
 	}
 }
 
@@ -20,8 +24,10 @@ function refreshIntersectionPoints() {
 	allPoints = [];
 	for (let i = 0; i < allLines.length-1; i++) {
 		for (let j = i+1; j < allLines.length; j++) {
-			if (i === j) {continue}
-			allPoints.push(allLines[i].intersects(allLines[j]));
+			let point = allLines[i].intersects(allLines[j]);
+			allPoints.push(point);
+			allLines[i].refreshColor();
+			allLines[j].refreshColor();
 		}
 	}
 }

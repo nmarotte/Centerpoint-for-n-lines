@@ -39,7 +39,35 @@ class LineSegment {
 	constructor(pointA, pointB) {
 		this.topPoint = pointA;
 		this.botPoint = pointB;
+		this.points = [];
+		this.color = [0,0,0,255]; //black
 	}
+
+	addNewPoint(point) {
+		//This method will set the colour to red if the point is not inside half plane
+		//or will keep the colour green if it doesn't change the line property
+		this.points.push(point);
+		this.refreshColor();
+
+
+	}
+
+	temporarilyChangeColor(point) {
+		if (!point.isInHalfPlane()) {
+			this.color = [255,0,0,255]; //RED
+		}
+	}
+
+	refreshColor() {
+		for (let i = 0; i < this.points.length; i++) {
+			if (!this.points[i].isInHalfPlane()) {
+				this.color = [255,0,0,255]; //RED
+				return;
+			}
+		}
+		this.color = [0,255,0,255]; //GREEN
+	}
+
 	intersects(other) {
 		if (this.isUninitialized()) {return new Point(null, null)}
 		// Calculating using determinant, translated to from math to javascript from source : https://mathworld.wolfram.com/Line-LineIntersection.html
@@ -63,7 +91,8 @@ class LineSegment {
 	}
 	draw(kwArgs) { //This method will draw (p5js) the shape using keyword args to change the color or stroke for example
 		if (this.isUninitialized()) {return;}
-		setStroke(kwArgs);
+		setStroke({colorValue:this.color, fillValue:this.color}); //use the line color
+		setStroke(kwArgs);//overwrite if necessary
 		line(this.topPoint.x, this.topPoint.y, this.botPoint.x, this.botPoint.y)
 		resetStroke();
 	}
