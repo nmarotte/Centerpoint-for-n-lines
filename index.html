@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projet Nathan Marotte</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <script src="p5js/p5.js"></script>
+  <!--<script src="../p5js/addons/p5.sound.min.js"></script>-->
+  <script src="oneLineFunctions.js"></script>
+  <script src="datastructures.js"></script>
+  <script src="buttonscripts.js"></script>
+  <script src="sketch.js"></script>
+</head>
+
+<body>
+<div id="textContainer" style="float: left; width: 50%">
+  <h1>The centerpoint for n lines</h1>
+  <p>This tool allows you to draw lines by clicking twice on the screen, once for each point defining a line segment that will be extended until it intersects with a border </p>
+  <p>Click this button to place the point <b>q</b>, the point that will be used to minimize <b>µL(H)</b></p> <button onclick="nextClickIsQ()">Place Q</button>
+  <p>Click this button to draw a line that will separate the plane in two halves. The half containing <b>q</b> will be called <b>H</b> <button onclick="nextLineIsHalfPlane()">Draw separator</button>
+</div>
+<div id="canvasContainer" style="float: right; width: 50%">
+  
+</div>
+</body>
+
+</html>
