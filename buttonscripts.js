@@ -11,5 +11,6 @@ function switchSegmentMode() {
 }
 
 function nextLineIsHalfPlane() {
+	hLine = null;
 	isNextLineHalfPlane = true;
 }
