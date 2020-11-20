@@ -34,12 +34,14 @@ function setup() {
 
 function draw() {
 	background(125);
+
 	if (tmpPreviewLine != null) tmpPreviewLine.draw({colorValue:[75,75,75,255], weightValue:isNextLineHalfPlane?3:1});
+	if (hLine !== null) hLine.draw({weightValue:3})
+	if (qPoint !== null) qPoint.draw();
+
 	tmpIntersectionPoints.forEach(point => point.draw()); //draw all temp intersections
 	allLines.forEach(line => line.draw()); //draw all allLines in the DrawableArray
-	if (hLine !== null) hLine.draw({weightValue:3})
 	allPoints.forEach(point => point.draw()); //draw all intersections
-	if (qPoint !== null) qPoint.draw();
 }
 
 

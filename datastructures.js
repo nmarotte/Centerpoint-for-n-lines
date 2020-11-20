@@ -58,9 +58,9 @@ class LineSegment {
 		}
 	}
 
-	refreshColor() {
+	refreshColor(separator=hLine) {
 		for (let i = 0; i < this.points.length; i++) {
-			if (!this.points[i].isInHalfPlane()) {
+			if (!this.points[i].isInHalfPlane(separator)) {
 				this.color = [255,0,0,255]; //RED
 				return;
 			}

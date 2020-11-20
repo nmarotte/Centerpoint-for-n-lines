@@ -54,5 +54,9 @@ function refreshTmpSeparatorLine() { //Called each time the mouse is moved when 
     for (let i = 0; i < allPoints.length; i++) {
         allPoints[i].refreshColor(tmpPreviewLine);
     }
+    for (let i = 0; i < allLines.length; i++) {
+        allLines[i].refreshColor(tmpPreviewLine);
+    }
+
 
 }
