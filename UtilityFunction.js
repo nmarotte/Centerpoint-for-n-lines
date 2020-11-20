@@ -49,3 +49,44 @@ function setStroke({weightValue, colorValue, fillValue} = {}) {
 		fill(fillValue);
 	}
 }
+
+function calculateValueOfHline() {
+	let result = 0
+	for (let i = 0; i < allLines.length; i++) {
+		if (allLines[i].color === "green") {
+			result += 1
+		}
+	}
+	return result
+}
+
+function findBestHLine() {
+	allPoints.sort((a,b) => a.x-b.x)
+	let best = 0
+	let bestHLine = null;
+	// find for left to right and then right to left
+	for (let i = 0; i < allPoints.length; i++) {
+		hLine = new MyLine(qPoint, allPoints[i]);
+		refreshIntersectionPoints()
+		let current = calculateValueOfHline()
+		if (current > best) {
+			best = current
+			bestHLine = hLine;
+		}
+	}
+	for (let i = allPoints.length-1; i < 0; i--) {
+		hLine = new MyLine(qPoint, allPoints[i]);
+		refreshIntersectionPoints()
+		let current = calculateValueOfHline()
+		if (current > best) {
+			best = current
+			bestHLine = hLine;
+		}
+	}
+	hLine = bestHLine;
+	refreshIntersectionPoints()
+	console.log("finished")
+	console.log(best)
+	console.log(hLine)
+
+}

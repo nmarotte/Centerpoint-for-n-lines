@@ -13,6 +13,8 @@ let tmpIntersectionPoints = [];
 let hLine = null;
 let qPoint = null;
 
+let epsilon = 0.0005
+
 function createBorders() {
 	corners = [new Point(0,0), new Point(canvasDiv.offsetWidth, 0),
 		new Point(canvasDiv.offsetWidth, windowHeight), new Point(0, windowHeight)];
@@ -57,7 +59,7 @@ function windowResized() {
 function getTurn(a, b, c) {
 	let determinant =
 		a.x * (b.y - c.y) - a.y * (b.x - c.x) + (b.x * c.y - c.x * b.y);
-	if (determinant < 0) return -1;
-	if (determinant === 0) return 0;
-	if (determinant > 0) return 1;
+	if (determinant < 0-epsilon) return -1;
+	if (determinant > 0+epsilon) return 1;
+	return 0
 }
