@@ -41,6 +41,8 @@ class Line {
 
         this.color = "black";
         this.thickness = thickness;
+
+        this.points = [];
     }
     display() {
         stroke(this.color);fill(this.color);strokeWeight(this.thickness)
@@ -52,13 +54,17 @@ class Line {
 
         this.b = intersection_with_lower_border(this.b, this.slope);
     }
+    refresh_all_intersections() {
+        this.get_all_intersections();
+    }
     get_all_intersections() {
         let intersections = [];
         for (let i = lines.length-1; i >= 0; i--) {
             if (this === lines[i]) {continue;} // Please do not intersect with yourself, thank youuuu
             intersections.push(this.intersects(lines[i]))
         }
-        return intersections;
+        this.points = intersections;
+        return this.points;
     }
     recolor(intersections=this.get_all_intersections()) {
         if (q === null || h === null) { // q or h is not defined, so black line
@@ -71,7 +77,6 @@ class Line {
                 return;
             }
         }
-        console.log("uwu")
         this.color = "green"; // We didn't find any red point
     }
 
@@ -91,6 +96,6 @@ class Line {
 
 
         //Since the division by 0 is allowed in Javascript, if two lines are parallel, the point will have Infinite as x and y
-        return new Point(xPoint, yPoint)
+        return new Point(xPoint, yPoint);
     }
 }

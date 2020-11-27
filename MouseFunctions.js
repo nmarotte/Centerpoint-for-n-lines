@@ -23,9 +23,11 @@ function preview_h_line() {
 }
 
 function click_next_line() {
-    add_line(new Line(last_click, get_mouse_point()));
+    let line_to_add = new Line(last_click, get_mouse_point());
+    add_line(line_to_add);
     preview_line = preview_intersection_points = last_click = null;
 
+    lines.forEach(line => line.refresh_all_intersections());
     reset_click();
 }
 
