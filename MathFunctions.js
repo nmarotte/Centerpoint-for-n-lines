@@ -43,10 +43,12 @@ function get_turn(a, b, c) {
     return 0
 }
 
-function are_in_region(q, h, points, mode=-1) {
+function are_in_region(q, h, points) {
+    let q_turn = get_turn(q, h.a, h.b);
     //Check if all the given points are in the region defined by q and h. Returns false if one point is not inside (and not on the bound)
     for (let i = points.length-1; i >= 0; i--) {
-        if (get_turn(q,h,points[i]) === -mode) { // If the turn is not the region nor zero
+        let p_turn = get_turn(points[i], h.a, h.b);
+        if (q_turn !== p_turn) { // If they have once a different turn, they are not all in the region
             return false;
         }
     }

@@ -51,40 +51,36 @@ function refresh_all_colors() {
 function find_best_h() {
     intersection_points[0].color = "blue";
     let bestCounter = Infinity; let bestH = null;
-    let anti = null;
 
     for (let i = intersection_points.length-1; i >= 0; i--) {
-        const point_of_h = intersection_points[i];
-        let counter = 0; let anti_counter = 0;
+        let counters = [0,0];
+        let h_lines = [new Line(q, intersection_points[i], 2), new Line(q, intersection_points[i], 2)];
 
-        h = new Line(q, intersection_points[i], 2);
+        // We create a h line shifted every so slightly in the two direction
+        h_lines[0].a.x += EPSILON_ZERO;
+        h_lines[0].b.x += EPSILON_ZERO;
+
+        h_lines[1].a.x -= EPSILON_ZERO;
+        h_lines[1].b.x -= EPSILON_ZERO;
         for (let j = lines.length-1; j >= 0; j--) {
             const line_to_test = lines[j];
-            if (are_in_region(q,point_of_h, line_to_test.points, -1)) {
-                counter += 1
+            for (const h_lines_key in h_lines) {
+                if (are_in_region(q, h_lines[h_lines_key], line_to_test.points)) {
+                    counters[h_lines_key] += 1;
+                }
             }
+
         }
-        for (let j = lines.length-1; j >= 0; j--) {
-            const line_to_test = lines[j];
-            if (are_in_region(q,point_of_h, line_to_test.points, 1)) {
-                anti_counter += 1
+        for (const counters_key in counters) {
+            if (counters[counters_key] < bestCounter) {
+                bestCounter = counters[counters_key];
+                bestH = h_lines[counters_key];
             }
-        }
-        if (anti_counter < bestCounter) {
-            bestCounter = anti_counter; bestH = h; anti=true;
-        }
-        if (counter < bestCounter) {
-            bestCounter = counter; bestH = h; anti=false;
         }
     }
     h = bestH;
-    console.log(bestCounter, anti, q_turn)
     refresh_all_colors();
-    // The recount makes sure that
-    if (!anti) {
-        q_turn = - q_turn;
-    }
-    refresh_all_colors();
+
 }
 
 function count_nb_green_lines() {
