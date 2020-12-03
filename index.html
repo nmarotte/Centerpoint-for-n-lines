@@ -30,6 +30,11 @@
 
   <h2>Divind and conquer</h2>
   <p>The problem can be divided in two parts : first, given the point <b>q</b>, we can look for all the different lines <b>h</b> to extract the line with the minimal <b>µ</b>, and finally, once we have that primitive, we can start to look for all the different points <b>q</b> to extract one point <b>q</b> with maximal µ. For any region of the plane defined by this point <b>q</b> and any line <b>h</b>, Theorem 7 of <a href="https://arxiv.org/abs/1012.0548">Dujmovic and Langerman (2010)</a> proved that µ cannot be less than √(n/3)</p>
+  <h3>Minimizing µ for all the lines <b>h</b> in regards to a given point <b>q</b></h3>
+
+  <h3>Maximizing µ for all the points <b>q</b> with µ-minimizing line <b>h</b></h3>
+
+
   <p>This tool allows you to draw lines by clicking twice on the screen, once for each point defining a line segment that will be extended until it intersects with a border </p>
   <p>Click this button to place the point <b>q</b>, the point that will be used to minimize <b>µL(H)</b></p> <button onclick="canvas.mouseClicked(click_q)">Place Q</button>
   <p>Click this button to draw a line that will separate the plane in two halves. The half containing <b>q</b> will be called <b>H</b></p> <button onclick="canvas.mouseClicked(click_h)">Draw separator</button>
